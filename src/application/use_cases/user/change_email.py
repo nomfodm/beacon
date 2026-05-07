@@ -17,7 +17,6 @@ class ChangeEmailUseCase:
     def __init__(self, *, uow: UnitOfWork):
         self._uow = uow
 
-    @require_login
     @require_not_banned
     async def execute(self, *, dto: ChangeEmailRequest, user: User) -> StatusResponse:
         async with self._uow:
