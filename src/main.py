@@ -1,9 +1,7 @@
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from slowapi.errors import RateLimitExceeded
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -41,8 +39,6 @@ app.add_middleware(
 )
 
 register_exception_handlers(app)
-
-app.mount("/uploads", StaticFiles(directory=Path(__file__).parent.parent / "uploads"), name="uploads")
 
 
 @app.get("/health")

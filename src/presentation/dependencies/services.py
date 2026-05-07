@@ -14,8 +14,8 @@ from domain.interfaces.services.texture_service import TextureService
 from domain.interfaces.services.token_service import TokenService
 from infrastructure.config import settings
 from infrastructure.services.code_generator import DigitCodeGenerator
-from infrastructure.services.console_email_service import ConsoleEmailService
-from infrastructure.services.local_file_storage import LocalFileStorage
+from infrastructure.services.email_service import SMTPEmailService
+from infrastructure.services.file_storage import S3FileStorage
 from infrastructure.services.profile_signer import RSAProfileSigner
 from infrastructure.services.string_hasher import BcryptStringHasher
 from infrastructure.services.texture_service import PillowTextureService
@@ -29,12 +29,27 @@ def get_code_generator() -> CodeGenerator:
 
 @lru_cache
 def get_email_service() -> EmailService:
-    return ConsoleEmailService()
+    return SMTPEmailService(
+        host=settings.smtp.host,
+        port=settings.smtp.port,
+        username=settings.smtp.username,
+        password=settings.smtp.password.get_secret_value(),
+        from_email=str(settings.smtp.from_email),
+        from_name=settings.smtp.from_name,
+        use_tls=settings.smtp.use_tls,
+    )
 
 
 @lru_cache
 def get_file_storage() -> FileStorage:
-    return LocalFileStorage(base_dir="uploads", public_base_url="http://localhost:8000/uploads")
+    return S3FileStorage(
+        endpoint_url=str(settings.s3.endpoint_url),
+        access_key=settings.s3.access_key,
+        secret_key=settings.s3.secret_key.get_secret_value(),
+        bucket=settings.s3.bucket,
+        public_base_url=str(settings.s3.public_base_url),
+        region_name=settings.s3.region,
+    )
 
 
 @lru_cache

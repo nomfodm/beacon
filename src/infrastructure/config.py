@@ -25,6 +25,7 @@ class S3Settings(BaseSettings):
     secret_key: SecretStr
     bucket: str
     public_base_url: AnyHttpUrl
+    region: str = "us-east-1"
 
 
 class SMTPSettings(BaseSettings):

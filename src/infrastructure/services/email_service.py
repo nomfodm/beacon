@@ -27,9 +27,9 @@ class SMTPEmailService(EmailService):
         self._from_name = from_name
         self._use_tls = use_tls
 
-    async def send_verification_code(self, email: Email, code: str) -> None:
+    async def send_verification_code(self, *, email: Email, code: str) -> None:
         message = MIMEMultipart("alternative")
-        message["Subject"] = "Код подтверждения"
+        message["Subject"] = "[Infinity] Код подтверждения"
         message["From"] = f"{self._from_name} <{self._from_email}>"
         message["To"] = email.value
         message.attach(MIMEText(f"Ваш код подтверждения: {code}", "plain", "utf-8"))
