@@ -13,6 +13,7 @@ from application.use_cases.auth.register_user_and_login import RegisterUserAndLo
 from application.use_cases.auth.reset_password import ResetPasswordRequest, ResetPasswordUseCase
 from application.use_cases.auth.revoke_session import RevokeSessionRequest, RevokeSessionUseCase
 from domain.entities.base import Email, UserRelatedHandle
+from presentation.limiter import limiter
 from presentation.routers.auth.dependencies import (
     SESSION_CREDENTIALS,
     get_login_uc,
@@ -48,6 +49,7 @@ REFRESH_COOKIE_PARAMS = {
 
 
 @auth_router.post("/login", response_model=LoginResponse)
+@limiter.limit("5/minute")
 async def login(
     request: Request,
     response: Response,
@@ -67,6 +69,7 @@ async def login(
 
 
 @auth_router.post("/signup", response_model=LoginResponse, status_code=201)
+@limiter.limit("5/minute")
 async def signup(
     request: Request,
     response: Response,
@@ -144,7 +147,9 @@ async def revoke_session(
 
 
 @auth_router.post("/password/reset", status_code=204)
+@limiter.limit("5/minute")
 async def reset_password(
+    request: Request,
     data: ResetPasswordSchema,
     uc: Annotated[ResetPasswordUseCase, Depends(get_reset_password_uc)],
 ):

@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from application.dtos.common import StatusResponse
 from application.dtos.login_history import LoginHistoryEntryResponse
@@ -18,6 +18,7 @@ from application.use_cases.user.send_verification_code import (
 )
 from domain.entities.base import Email, UserRelatedHandle
 from presentation.dependencies.auth import CURRENT_USER
+from presentation.limiter import limiter
 from presentation.routers.user.dependencies import (
     get_activate_user_uc,
     get_change_email_uc,
@@ -67,7 +68,9 @@ async def login_history(
 
 
 @user_router.post("/me/verification-code", response_model=VerificationCodeResponse)
+@limiter.limit("10/minute")
 async def send_verification_code(
+    request: Request,
     data: SendVerificationCodeSchema,
     user: CURRENT_USER,
     uc: Annotated[SendVerificationCodeUseCase, Depends(get_send_verification_code_uc)],
@@ -76,7 +79,9 @@ async def send_verification_code(
 
 
 @user_router.post("/activate", response_model=StatusResponse)
+@limiter.limit("10/minute")
 async def activate_user(
+    request: Request,
     data: ActivateUserSchema,
     uc: Annotated[ActivateUserUseCase, Depends(get_activate_user_uc)],
 ):
@@ -89,7 +94,9 @@ async def activate_user(
 
 
 @user_router.patch("/me/email", response_model=StatusResponse)
+@limiter.limit("10/minute")
 async def change_email(
+    request: Request,
     data: ChangeEmailSchema,
     user: CURRENT_USER,
     uc: Annotated[ChangeEmailUseCase, Depends(get_change_email_uc)],
@@ -98,7 +105,9 @@ async def change_email(
 
 
 @user_router.patch("/me/password", response_model=StatusResponse)
+@limiter.limit("10/minute")
 async def change_password(
+    request: Request,
     data: ChangePasswordSchema,
     user: CURRENT_USER,
     uc: Annotated[ChangePasswordUseCase, Depends(get_change_password_uc)],
