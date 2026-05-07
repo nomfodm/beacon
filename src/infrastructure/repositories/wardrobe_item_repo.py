@@ -46,13 +46,15 @@ class SqlWardrobeItemRepository(WardrobeItemRepository):
 
     async def get_ids_by_texture_id_except_user(self, texture_id: int, except_user_id: int) -> list[int]:
         result = await self._session.execute(
-            select(WardrobeItemModel.id)
-            .where(WardrobeItemModel.texture_id == texture_id, WardrobeItemModel.user_id != except_user_id)
+            select(WardrobeItemModel.id).where(
+                WardrobeItemModel.texture_id == texture_id, WardrobeItemModel.user_id != except_user_id
+            )
         )
         return list(result.scalars().all())
 
     async def delete_by_texture_id_except_user(self, texture_id: int, except_user_id: int) -> None:
         await self._session.execute(
-            delete(WardrobeItemModel)
-            .where(WardrobeItemModel.texture_id == texture_id, WardrobeItemModel.user_id != except_user_id)
+            delete(WardrobeItemModel).where(
+                WardrobeItemModel.texture_id == texture_id, WardrobeItemModel.user_id != except_user_id
+            )
         )

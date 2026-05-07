@@ -1,7 +1,7 @@
 import datetime
 from functools import wraps
 
-from domain.entities.user import Role, User, BanStatus
+from domain.entities.user import Role, User
 from domain.exceptions.auth import AccessDeniedError, UnauthenticatedError, UserBannedError, UserNeedsActivationError
 
 

@@ -85,4 +85,9 @@ async def test_upload_file_uses_correct_endpoint(storage: S3FileStorage, mocker)
 
     await storage.upload_file(file_bytes=b"d", destination_path="x.png", content_type="image/png")
 
-    storage._session.client.assert_called_once_with("s3", endpoint_url="https://s3.example.com")
+    storage._session.client.assert_called_once_with(
+        "s3",
+        endpoint_url="https://s3.example.com",
+        region_name="us-east-1",
+        config=mocker.ANY,
+    )

@@ -42,7 +42,7 @@ async def test_send_verification_code_message_fields(service: SMTPEmailService, 
     assert message["To"] == "player@example.com"
     assert "noreply@example.com" in message["From"]
     assert "Infinity" in message["From"]
-    assert message["Subject"] == "Код подтверждения"
+    assert message["Subject"] == "[Infinity] Код подтверждения"
 
 
 @pytest.mark.asyncio

@@ -20,7 +20,7 @@ def test_url_validation_success():
 
 
 def test_url_validation_fails():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         Url("bad-url")
 
 

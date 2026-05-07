@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from application.decorators.auth import require_login, require_not_banned
+from application.decorators.auth import require_not_banned
 from application.dtos.common import StatusResponse
 from domain.entities.base import Email
 from domain.entities.user import User

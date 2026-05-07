@@ -2,7 +2,6 @@ import datetime
 from dataclasses import dataclass
 from uuid import UUID
 
-from application.decorators.auth import require_login
 from application.dtos.user import BanStatusResponse
 from application.dtos.wardrobe import WardrobeItemResponse
 from domain.entities.user import User

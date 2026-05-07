@@ -29,6 +29,7 @@ async def get_current_user(
         raise UserNotFoundError("Пользователь не найден.")
     return user
 
+
 CURRENT_USER = Annotated[User, Depends(get_current_user)]
 
 
@@ -45,5 +46,6 @@ async def get_ci_admin_user(
         roles={Role.ADMIN},
         is_active=True,
     )
+
 
 CI_ADMIN_USER = Annotated[User, Depends(get_ci_admin_user)]

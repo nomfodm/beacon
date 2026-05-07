@@ -112,6 +112,7 @@ async def test_add_release_asset_requires_admin(mock_uow: UnitOfWork, active_use
                 platform=Platform.WINDOWS,
                 download_url=Url("https://example.com/launcher.exe"),
                 checksum="deadbeef",
+                file_size=123456,
             ),
             user=active_user,
         )
