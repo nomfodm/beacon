@@ -32,7 +32,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # List of origins allowed to make requests
+    allow_origins=["https://infinityserver.ru"],  # List of origins allowed to make requests
     allow_credentials=True,  # Allow cookies/auth headers in cross-origin requests
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
