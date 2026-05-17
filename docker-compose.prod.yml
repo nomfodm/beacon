@@ -19,8 +19,8 @@ services:
       DATABASE__URL: postgresql+asyncpg://postgres:pass@postgres:5432/infinity
       REDIS__HOST: redis
     depends_on:
-      postgres:
-        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
     restart: unless-stopped

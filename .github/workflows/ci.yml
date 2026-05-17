@@ -18,7 +18,6 @@ jobs:
       - run: uv sync --all-groups
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - run: uv run alembic check
 
   test-unit:
     runs-on: ubuntu-latest
@@ -33,6 +32,18 @@ jobs:
 
   test-integration:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: infinity
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: pass
+        options: >-
+          --health-cmd "pg_isready -U postgres -d infinity"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4
@@ -40,4 +51,10 @@ jobs:
           python-version: "3.13"
           enable-cache: true
       - run: uv sync --all-groups
+      - run: uv run alembic upgrade head
+        env:
+          DATABASE__URL: postgresql+asyncpg://postgres:pass@localhost:5432/infinity
+      - run: uv run alembic check
+        env:
+          DATABASE__URL: postgresql+asyncpg://postgres:pass@localhost:5432/infinity
       - run: uv run pytest tests/integration --tb=short
