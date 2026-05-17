@@ -2,6 +2,7 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import Cookie, Depends
+from redis.asyncio import Redis
 
 from application.dtos.auth import SessionCredentials
 from application.services.auth import AuthService
@@ -15,6 +16,8 @@ from application.use_cases.auth.reset_password import ResetPasswordUseCase
 from application.use_cases.auth.revoke_session import RevokeSessionUseCase
 from domain.interfaces.services.string_hasher import StringHasher
 from domain.interfaces.unit_of_work import UnitOfWork
+from infrastructure.redis.refresh_idempotency_repo import RedisRefreshIdempotencyRepository
+from presentation.dependencies.db import get_redis_client
 from presentation.dependencies.services import get_auth_service, get_string_hasher
 from presentation.dependencies.uow import get_uow
 
@@ -59,8 +62,16 @@ def get_sessions_uc(uow: UOW, auth_service: AUTH_SERVICE) -> GetSessionsUseCase:
     return GetSessionsUseCase(uow=uow, auth_service=auth_service)
 
 
-def get_refresh_session_uc(uow: UOW, auth_service: AUTH_SERVICE) -> RefreshSessionUseCase:
-    return RefreshSessionUseCase(uow=uow, auth_service=auth_service)
+def get_refresh_session_uc(
+    uow: UOW,
+    auth_service: AUTH_SERVICE,
+    redis: Annotated[Redis, Depends(get_redis_client)],
+) -> RefreshSessionUseCase:
+    return RefreshSessionUseCase(
+        uow=uow,
+        auth_service=auth_service,
+        idempotency_cache=RedisRefreshIdempotencyRepository(redis),
+    )
 
 
 def get_revoke_session_uc(uow: UOW, auth_service: AUTH_SERVICE) -> RevokeSessionUseCase:

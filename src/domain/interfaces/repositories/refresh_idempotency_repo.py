@@ -1,0 +1,6 @@
+from typing import Protocol
+
+
+class RefreshIdempotencyRepository(Protocol):
+    async def get(self, *, token: str) -> str | None: ...
+    async def save(self, *, token: str, payload: str, ttl: int) -> None: ...

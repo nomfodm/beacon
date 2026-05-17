@@ -17,11 +17,13 @@ from domain.interfaces.unit_of_work import UnitOfWork
 @pytest.mark.asyncio
 @pytest.mark.parametrize("error", [SessionRevokedError("x"), SessionExpiredError("x"), TokenAuthenticityError("x")])
 async def test_refresh_session_fails_and_skips_commit(
-    mock_uow: UnitOfWork, mock_auth_service: AuthService, fake_session: Session, error
+    mock_uow: UnitOfWork, mock_auth_service: AuthService, fake_session: Session, error, mocker
 ):
     mock_uow.sessions.get_by_id_or_raise = AsyncMock(return_value=fake_session)
     mock_auth_service.verify_session.side_effect = error
-    uc = RefreshSessionUseCase(uow=mock_uow, auth_service=mock_auth_service)
+    mock_cache = mocker.AsyncMock()
+    mock_cache.get = AsyncMock(return_value=None)
+    uc = RefreshSessionUseCase(uow=mock_uow, auth_service=mock_auth_service, idempotency_cache=mock_cache)
 
     with pytest.raises(type(error)):
         await uc.execute(dto=SessionCredentials(id=uuid.uuid4(), refresh_token="refresh_token"))
