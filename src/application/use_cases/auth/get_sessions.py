@@ -7,6 +7,8 @@ from application.services.auth import AuthService
 from domain.entities.session import Session
 from domain.interfaces.unit_of_work import UnitOfWork
 
+_utc = datetime.timezone.utc
+
 
 @dataclass(frozen=True)
 class SessionResponse:
@@ -14,8 +16,6 @@ class SessionResponse:
     user_agent: str | None = None
     ip_address: str | None = None
     last_used_at: datetime.datetime | None = None
-    is_revoked: bool = False
-
     is_current: bool = False
     id: uuid.UUID | None = None
 
@@ -28,7 +28,6 @@ class SessionResponse:
             last_used_at=session.last_used_at,
             id=session.id,
             is_current=is_current,
-            is_revoked=session.is_revoked,
         )
 
 
@@ -44,4 +43,9 @@ class GetSessionsUseCase:
 
             all_sessions = await self._uow.sessions.get_all_by_user_id(user_id=session.user_id)
 
-            return [SessionResponse.from_domain(session=s, is_current=s.id == session.id) for s in all_sessions]
+            now = datetime.datetime.now(_utc)
+            return [
+                SessionResponse.from_domain(session=s, is_current=s.id == session.id)
+                for s in all_sessions
+                if not s.is_revoked and s.expires_at > now
+            ]
