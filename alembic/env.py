@@ -2,13 +2,13 @@ import asyncio
 import sys
 from pathlib import Path
 
-from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
+
+from alembic import context
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from infrastructure.config import settings
-from infrastructure.database.models.base import Base
 from infrastructure.database.models import (  # noqa: F401 — нужен для autogenerate
     launcher_model,
     login_history_model,
@@ -17,6 +17,7 @@ from infrastructure.database.models import (  # noqa: F401 — нужен для
     user_model,
     wardrobe_model,
 )
+from infrastructure.database.models.base import Base
 
 target_metadata = Base.metadata
 

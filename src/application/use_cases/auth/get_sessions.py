@@ -7,7 +7,7 @@ from application.services.auth import AuthService
 from domain.entities.session import Session
 from domain.interfaces.unit_of_work import UnitOfWork
 
-_utc = datetime.timezone.utc
+_utc = datetime.UTC
 
 
 @dataclass(frozen=True)
