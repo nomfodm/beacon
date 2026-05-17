@@ -10,7 +10,7 @@ from infrastructure.database.models.base import Base
 class LoginHistoryEntryModel(Base):
     __tablename__ = "login_history"
 
-    id: Mapped[int | None] = mapped_column(primary_key=True)
+    id: Mapped[int | None] = mapped_column(primary_key=True, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     ip_address: Mapped[str | None]

@@ -11,7 +11,7 @@ from infrastructure.database.models.base import Base
 class UserModel(Base):
     __tablename__ = "users"
 
-    id: Mapped[int | None] = mapped_column(primary_key=True)
+    id: Mapped[int | None] = mapped_column(primary_key=True, nullable=False)
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
     username: Mapped[str] = mapped_column(String, unique=True, index=True)
     password_hash: Mapped[str]

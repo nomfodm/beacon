@@ -12,7 +12,7 @@ from infrastructure.database.models.base import Base
 class MinecraftProfileModel(Base):
     __tablename__ = "minecraft_profiles"
 
-    id: Mapped[int | None] = mapped_column(primary_key=True)
+    id: Mapped[int | None] = mapped_column(primary_key=True, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), unique=True)
     uuid: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), unique=True)
     nickname: Mapped[str] = mapped_column(String, unique=True, index=True)

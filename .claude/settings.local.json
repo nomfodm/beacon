@@ -1,1 +1,8 @@
-{}
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\nomfodm\\\\Desktop\\\\infinity_fastapi\" -Force)",
+      "Bash(Select-Object Name, Mode)"
+    ]
+  }
+}

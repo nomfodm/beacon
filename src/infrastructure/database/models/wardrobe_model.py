@@ -11,7 +11,7 @@ from infrastructure.database.models.base import Base
 class TextureModel(Base):
     __tablename__ = "textures"
 
-    id: Mapped[int | None] = mapped_column(primary_key=True)
+    id: Mapped[int | None] = mapped_column(primary_key=True, nullable=False)
     hash: Mapped[str] = mapped_column(String, unique=True, index=True)
     type: Mapped[str]
     url: Mapped[str]
@@ -40,7 +40,7 @@ class TextureModel(Base):
 class WardrobeItemModel(Base):
     __tablename__ = "wardrobe_items"
 
-    id: Mapped[int | None] = mapped_column(primary_key=True)
+    id: Mapped[int | None] = mapped_column(primary_key=True, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     texture_id: Mapped[int] = mapped_column(ForeignKey("textures.id"))
@@ -74,7 +74,7 @@ class WardrobeItemModel(Base):
 class TextureCatalogItemModel(Base):
     __tablename__ = "texture_catalog"
 
-    id: Mapped[int | None] = mapped_column(primary_key=True)
+    id: Mapped[int | None] = mapped_column(primary_key=True, nullable=False)
     title: Mapped[str]
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     texture_id: Mapped[int] = mapped_column(ForeignKey("textures.id"))

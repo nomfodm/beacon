@@ -19,6 +19,7 @@ dependencies = [
     "aiosmtplib>=5.1.0",
     "aioboto3>=15.5.0",
     "slowapi>=0.1.9",
+    "alembic>=1.18.4",
 ]
 
 [dependency-groups]

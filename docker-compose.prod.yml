@@ -1,4 +1,15 @@
 services:
+  migrator:
+    image: ghcr.io/nomfodm/beacon:latest
+    env_file: .env
+    environment:
+      DATABASE__URL: postgresql+asyncpg://postgres:pass@postgres:5432/infinity
+    command: alembic upgrade head
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
   app:
     image: ghcr.io/nomfodm/beacon:latest
     ports:

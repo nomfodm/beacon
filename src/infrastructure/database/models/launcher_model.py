@@ -11,7 +11,7 @@ from infrastructure.database.models.base import Base
 class LauncherReleaseModel(Base):
     __tablename__ = "launcher_releases"
 
-    id: Mapped[int | None] = mapped_column(primary_key=True)
+    id: Mapped[int | None] = mapped_column(primary_key=True, nullable=False)
     version: Mapped[str]
     released_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     is_mandatory: Mapped[bool] = mapped_column(default=False)
@@ -43,7 +43,7 @@ class LauncherReleaseModel(Base):
 class LauncherReleaseAssetModel(Base):
     __tablename__ = "launcher_release_assets"
 
-    id: Mapped[int | None] = mapped_column(primary_key=True)
+    id: Mapped[int | None] = mapped_column(primary_key=True, nullable=False)
     release_id: Mapped[int] = mapped_column(ForeignKey("launcher_releases.id"))
     platform: Mapped[str]
     download_url: Mapped[str]
