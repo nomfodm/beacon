@@ -2,6 +2,7 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
+from starlette.requests import Request
 
 from application.dtos.auth import SessionCredentials
 from application.dtos.launcher import CheckUpdateResponse, LauncherReleaseResponse
@@ -173,6 +174,7 @@ async def add_release_asset(
 
 @launcher_router.post("/auth/login", response_model=LauncherLoginResponse)
 async def launcher_login(
+    request: Request,
     data: LoginRequest,
     uc: Annotated[LoginUseCase, Depends(get_login_uc)],
 ):
@@ -180,6 +182,8 @@ async def launcher_login(
         dto=UserLoginRequest(
             username=UserRelatedHandle(data.username),
             password=data.password,
+            ip_address=request.client.host if request.client else None,
+            user_agent=request.headers.get("user-agent"),
         )
     )
     return LauncherLoginResponse(
