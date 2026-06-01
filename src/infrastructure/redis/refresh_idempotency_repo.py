@@ -1,7 +1,9 @@
 from redis.asyncio import Redis
 
+from domain.interfaces.repositories.refresh_idempotency_repo import RefreshIdempotencyRepository
 
-class RedisRefreshIdempotencyRepository:
+
+class RedisRefreshIdempotencyRepository(RefreshIdempotencyRepository):
     _PREFIX = "refresh_idempotency"
 
     def __init__(self, client: Redis) -> None:
@@ -10,8 +12,8 @@ class RedisRefreshIdempotencyRepository:
     def _key(self, token: str) -> str:
         return f"{self._PREFIX}:{token}"
 
-    async def get(self, *, token: str) -> str | None:
+    async def get(self, token: str) -> str | None:
         return await self._client.get(self._key(token))
 
-    async def save(self, *, token: str, payload: str, ttl: int) -> None:
+    async def save(self, token: str, payload: str, ttl: int) -> None:
         await self._client.setex(self._key(token), ttl, payload)

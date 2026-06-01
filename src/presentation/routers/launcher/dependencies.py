@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends
+from redis import Redis
 
 from application.services.auth import AuthService
 from application.services.minecraft_profile import MinecraftProfileService
@@ -18,6 +19,8 @@ from application.use_cases.launcher.minecraft_session.profile import ProfileUseC
 from application.use_cases.launcher.publish_release import PublishReleaseUseCase
 from domain.interfaces.services.string_hasher import StringHasher
 from domain.interfaces.unit_of_work import UnitOfWork
+from infrastructure.redis.refresh_idempotency_repo import RedisRefreshIdempotencyRepository
+from presentation.dependencies.db import get_redis_client
 from presentation.dependencies.services import get_auth_service, get_minecraft_profile_service, get_string_hasher
 from presentation.dependencies.uow import get_uow
 
@@ -75,5 +78,13 @@ def get_logout_from_others_uc(
     return LogoutFromOthersUseCase(uow=uow, auth_service=auth_service, hasher=string_hasher)
 
 
-def get_refresh_session_uc(uow: UOW, auth_service: AUTH_SERVICE) -> RefreshSessionUseCase:
-    return RefreshSessionUseCase(uow=uow, auth_service=auth_service)
+def get_refresh_session_uc(
+    uow: UOW,
+    auth_service: AUTH_SERVICE,
+    redis: Annotated[Redis, Depends(get_redis_client)],
+) -> RefreshSessionUseCase:
+    return RefreshSessionUseCase(
+        uow=uow,
+        auth_service=auth_service,
+        idempotency_cache=RedisRefreshIdempotencyRepository(redis),
+    )
