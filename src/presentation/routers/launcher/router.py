@@ -240,6 +240,6 @@ async def authlib_injector_metadata(
                 "implementationVersion": "1.0.0"
             },
             "skinDomains": ["storage.infinityserver.ru"],
-            "signaturePublickey": profile_signer.get_public_key()
+            "signaturePublickey": f"-----BEGIN PUBLIC KEY-----\n{profile_signer.get_public_key()}\n-----END PUBLIC KEY-----\n"
         }
     )
