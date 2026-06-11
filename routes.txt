@@ -36,9 +36,9 @@ POST    /launcher/releases                                                      
 POST    /launcher/releases/<id>/assets                                                      AddReleaseAsset_UseCase
 GET     /launcher                                                                           просто json-заглушка
 POST    /launcher/session                                                                   CreateMinecraftSession_UseCase
-GET     /launcher/session/minecraft/has-joined?username=nomfodm&server_id=fsdafn...fdsf     HasJoinedServer_UseCase
-POST    /launcher/session/minecraft/join                                                    JoinServer_UseCase
-GET     /launcher/session/minecraft/profile/<uuid>                                          Profile_UseCase
+GET     /launcher/sessionserver/session/minecraft/has-joined?username=nomfodm&server_id=fsdafn...fdsf     HasJoinedServer_UseCase
+POST    /launcher/sessionserver/session/minecraft/join                                                    JoinServer_UseCase
+GET     /launcher/sessionserver/session/minecraft/profile/<uuid>                                          Profile_UseCase
 POST    /launcher/auth/login    Login_UseCase
 POST    /launcher/auth/logout   Logout_UseCase
 POST    /launcher/auth/logout/others     LogoutFromOthers_UseCase

@@ -96,7 +96,7 @@ async def create_minecraft_session(
     return await uc.execute(user=user)
 
 
-@launcher_router.post("/session/minecraft/join", status_code=204)
+@launcher_router.post("/sessionserver/session/minecraft/join", status_code=204)
 async def join_server(
         data: JoinServerSchema,
         uc: Annotated[JoinServerUseCase, Depends(get_join_server_uc)],
@@ -110,7 +110,7 @@ async def join_server(
     )
 
 
-@launcher_router.get("/session/minecraft/has-joined", response_model=ProfileResponse)
+@launcher_router.get("/sessionserver/session/minecraft/has-joined", response_model=ProfileResponse)
 async def has_joined(
         username: str,
         server_id: str,
@@ -124,7 +124,7 @@ async def has_joined(
     )
 
 
-@launcher_router.get("/session/minecraft/profile/{profile_uuid}", response_model=ProfileResponse)
+@launcher_router.get("/sessionserver/session/minecraft/profile/{profile_uuid}", response_model=ProfileResponse)
 async def get_profile(
         profile_uuid: UUID,
         uc: Annotated[ProfileUseCase, Depends(get_profile_uc)],
