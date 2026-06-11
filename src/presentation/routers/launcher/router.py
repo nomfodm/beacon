@@ -3,6 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from application.dtos.auth import SessionCredentials
 from application.dtos.launcher import CheckUpdateResponse, LauncherReleaseResponse
@@ -28,7 +29,9 @@ from application.use_cases.launcher.publish_release import (
 )
 from domain.entities.base import MCAccessToken, MCServerID, SemVer, Url, UserRelatedHandle
 from domain.entities.launcher import Platform
+from domain.interfaces.services.profile_signer import ProfileSigner
 from presentation.dependencies.auth import CI_ADMIN_USER, CURRENT_USER
+from presentation.dependencies.services import get_profile_signer
 from presentation.routers.auth.schemas import LauncherLoginResponse, LoginRequest
 from presentation.routers.launcher.dependencies import (
     get_add_release_asset_uc,
@@ -74,8 +77,8 @@ launcher_router = APIRouter(prefix="/launcher", tags=["launcher"])
 
 @launcher_router.get("/update", response_model=CheckUpdateResponse)
 async def check_update(
-    query: Annotated[CheckUpdateSchema, Depends()],
-    uc: Annotated[CheckUpdateUseCase, Depends(get_check_update_uc)],
+        query: Annotated[CheckUpdateSchema, Depends()],
+        uc: Annotated[CheckUpdateUseCase, Depends(get_check_update_uc)],
 ):
     return await uc.execute(
         dto=CheckUpdateRequest(
@@ -85,18 +88,18 @@ async def check_update(
     )
 
 
-@launcher_router.post("/sessions", response_model=MinecraftSessionResponse, status_code=201)
+@launcher_router.post("/session", response_model=MinecraftSessionResponse, status_code=201)
 async def create_minecraft_session(
-    user: CURRENT_USER,
-    uc: Annotated[CreateMinecraftSessionUseCase, Depends(get_create_mc_session_uc)],
+        user: CURRENT_USER,
+        uc: Annotated[CreateMinecraftSessionUseCase, Depends(get_create_mc_session_uc)],
 ):
     return await uc.execute(user=user)
 
 
-@launcher_router.post("/sessions/minecraft/join", status_code=204)
+@launcher_router.post("/session/minecraft/join", status_code=204)
 async def join_server(
-    data: JoinServerSchema,
-    uc: Annotated[JoinServerUseCase, Depends(get_join_server_uc)],
+        data: JoinServerSchema,
+        uc: Annotated[JoinServerUseCase, Depends(get_join_server_uc)],
 ):
     await uc.execute(
         dto=JoinServerRequest(
@@ -107,11 +110,11 @@ async def join_server(
     )
 
 
-@launcher_router.get("/sessions/minecraft/has-joined", response_model=ProfileResponse)
+@launcher_router.get("/session/minecraft/has-joined", response_model=ProfileResponse)
 async def has_joined(
-    username: str,
-    server_id: str,
-    uc: Annotated[HasJoinedServerUseCase, Depends(get_has_joined_uc)],
+        username: str,
+        server_id: str,
+        uc: Annotated[HasJoinedServerUseCase, Depends(get_has_joined_uc)],
 ):
     return await uc.execute(
         dto=HasJoinedRequest(
@@ -121,27 +124,27 @@ async def has_joined(
     )
 
 
-@launcher_router.get("/sessions/minecraft/profile/{profile_uuid}", response_model=ProfileResponse)
+@launcher_router.get("/session/minecraft/profile/{profile_uuid}", response_model=ProfileResponse)
 async def get_profile(
-    profile_uuid: UUID,
-    uc: Annotated[ProfileUseCase, Depends(get_profile_uc)],
+        profile_uuid: UUID,
+        uc: Annotated[ProfileUseCase, Depends(get_profile_uc)],
 ):
     return await uc.execute(dto=ProfileRequest(uuid=profile_uuid))
 
 
 @launcher_router.get("/releases/latest", response_model=LauncherReleaseResponse)
 async def get_latest_release(
-    platform: Platform,
-    uc: Annotated[GetLatestPlatformReleaseUseCase, Depends(get_latest_platform_release_uc)],
+        platform: Platform,
+        uc: Annotated[GetLatestPlatformReleaseUseCase, Depends(get_latest_platform_release_uc)],
 ):
     return await uc.execute(dto=GetLatestPlatformReleaseRequest(platform=platform))
 
 
 @launcher_router.post("/releases", response_model=CreateReleaseResponse, status_code=201)
 async def publish_release(
-    data: PublishReleaseSchema,
-    user: CI_ADMIN_USER,
-    uc: Annotated[PublishReleaseUseCase, Depends(get_publish_release_uc)],
+        data: PublishReleaseSchema,
+        user: CI_ADMIN_USER,
+        uc: Annotated[PublishReleaseUseCase, Depends(get_publish_release_uc)],
 ):
     return await uc.execute(
         dto=PublishReleaseRequest(
@@ -155,10 +158,10 @@ async def publish_release(
 
 @launcher_router.post("/releases/{release_id}/assets", status_code=201)
 async def add_release_asset(
-    release_id: int,
-    data: AddReleaseAssetSchema,
-    user: CI_ADMIN_USER,
-    uc: Annotated[AddReleaseAssetUseCase, Depends(get_add_release_asset_uc)],
+        release_id: int,
+        data: AddReleaseAssetSchema,
+        user: CI_ADMIN_USER,
+        uc: Annotated[AddReleaseAssetUseCase, Depends(get_add_release_asset_uc)],
 ):
     await uc.execute(
         dto=AddReleaseAssetRequest(
@@ -174,9 +177,9 @@ async def add_release_asset(
 
 @launcher_router.post("/auth/login", response_model=LauncherLoginResponse)
 async def launcher_login(
-    request: Request,
-    data: LoginRequest,
-    uc: Annotated[LoginUseCase, Depends(get_login_uc)],
+        request: Request,
+        data: LoginRequest,
+        uc: Annotated[LoginUseCase, Depends(get_login_uc)],
 ):
     result = await uc.execute(
         dto=UserLoginRequest(
@@ -194,16 +197,16 @@ async def launcher_login(
 
 @launcher_router.post("/auth/logout", status_code=204)
 async def launcher_logout(
-    data: LauncherSessionRequest,
-    uc: Annotated[LogoutUseCase, Depends(get_logout_uc)],
+        data: LauncherSessionRequest,
+        uc: Annotated[LogoutUseCase, Depends(get_logout_uc)],
 ):
     await uc.execute(dto=_parse_refresh_token(data.refresh_token))
 
 
 @launcher_router.post("/auth/logout/others", status_code=204)
 async def launcher_logout_from_others(
-    data: LauncherLogoutFromOthersSchema,
-    uc: Annotated[LogoutFromOthersUseCase, Depends(get_logout_from_others_uc)],
+        data: LauncherLogoutFromOthersSchema,
+        uc: Annotated[LogoutFromOthersUseCase, Depends(get_logout_from_others_uc)],
 ):
     await uc.execute(
         dto=LogoutFromOthersRequest(
@@ -215,11 +218,28 @@ async def launcher_logout_from_others(
 
 @launcher_router.post("/auth/refresh", response_model=LauncherLoginResponse)
 async def launcher_refresh(
-    data: LauncherSessionRequest,
-    uc: Annotated[RefreshSessionUseCase, Depends(get_refresh_session_uc)],
+        data: LauncherSessionRequest,
+        uc: Annotated[RefreshSessionUseCase, Depends(get_refresh_session_uc)],
 ):
     result = await uc.execute(dto=_parse_refresh_token(data.refresh_token))
     return LauncherLoginResponse(
         access_token=result.access_token,
         refresh_token=result.refresh_split_token,
+    )
+
+
+@launcher_router.get("")
+async def authlib_injector_metadata(
+        profile_signer: Annotated[ProfileSigner, Depends(get_profile_signer)]
+):
+    return JSONResponse(
+        {
+            "meta": {
+                "serverName": "Infinity Server",
+                "implementationName": "infinity-auth",
+                "implementationVersion": "1.0.0"
+            },
+            "skinDomains": ["storage.infinityserver.ru"],
+            "signaturePublickey": profile_signer.get_public_key()
+        }
     )

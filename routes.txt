@@ -34,10 +34,11 @@ DELETE  /wardrobe/catalog/<id>                              UnpublishTexture_Use
 GET     /launcher/update?platform=win&version=1.0.0                                         CheckUpdate_UseCase
 POST    /launcher/releases                                                                  PublishRelease_UseCase
 POST    /launcher/releases/<id>/assets                                                      AddReleaseAsset_UseCase
-POST    /launcher/sessions                                                                  CreateMinecraftSession_UseCase
-GET     /launcher/sessions/minecraft/has-joined?username=nomfodm&server_id=fsdafn...fdsf    HasJoinedServer_UseCase
-POST    /launcher/sessions/minecraft/join                                                   JoinServer_UseCase
-GET     /launcher/sessions/minecraft/profile/<uuid>                                         Profile_UseCase
+GET     /launcher                                                                           просто json-заглушка
+POST    /launcher/session                                                                   CreateMinecraftSession_UseCase
+GET     /launcher/session/minecraft/has-joined?username=nomfodm&server_id=fsdafn...fdsf     HasJoinedServer_UseCase
+POST    /launcher/session/minecraft/join                                                    JoinServer_UseCase
+GET     /launcher/session/minecraft/profile/<uuid>                                          Profile_UseCase
 POST    /launcher/auth/login    Login_UseCase
 POST    /launcher/auth/logout   Logout_UseCase
 POST    /launcher/auth/logout/others     LogoutFromOthers_UseCase
