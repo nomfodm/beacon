@@ -11,9 +11,9 @@ class CheckUpdateRequest(BaseModel):
 
 
 class JoinServerRequest(BaseModel):
-    access_token: str
-    selected_profile: UUID
-    server_id: str
+    accessToken: str
+    selectedProfile: UUID
+    serverId: str
 
 
 class PublishReleaseRequest(BaseModel):

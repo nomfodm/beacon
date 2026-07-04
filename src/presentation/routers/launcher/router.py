@@ -103,14 +103,14 @@ async def join_server(
 ):
     await uc.execute(
         dto=JoinServerRequest(
-            access_token=MCAccessToken(data.access_token),
-            selected_profile=data.selected_profile,
-            server_id=MCServerID(data.server_id),
+            access_token=MCAccessToken(data.accessToken),
+            selected_profile=data.selectedProfile,
+            server_id=MCServerID(data.serverId),
         )
     )
 
 
-@launcher_router.get("/sessionserver/session/minecraft/has-joined", response_model=ProfileResponse)
+@launcher_router.get("/sessionserver/session/minecraft/hasJoined", response_model=ProfileResponse)
 async def has_joined(
         username: str,
         server_id: str,
