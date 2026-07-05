@@ -73,10 +73,10 @@ class MCAccessToken(IdentName):
 
 
 @dataclass(frozen=True)
-class MCServerID(IdentName):
-    def _validate(self):
-        if len(self.value) not in [32, 33]:
-            raise ValidationError("Неверная длина serverID (32-33).")
+class MCServerID(IdentName): ...
+    # def _validate(self):
+    #     if len(self.value) not in [32, 33]:
+    #         raise ValidationError("Неверная длина serverID (32-33).")
 
 
 @dataclass(frozen=True)
