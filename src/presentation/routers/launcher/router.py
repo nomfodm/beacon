@@ -113,13 +113,13 @@ async def join_server(
 @launcher_router.get("/sessionserver/session/minecraft/hasJoined", response_model=ProfileResponse)
 async def has_joined(
         username: str,
-        server_id: str,
+        serverId: str,
         uc: Annotated[HasJoinedServerUseCase, Depends(get_has_joined_uc)],
 ):
     return await uc.execute(
         dto=HasJoinedRequest(
             username=UserRelatedHandle(username),
-            server_id=MCServerID(server_id),
+            server_id=MCServerID(serverId),
         )
     )
 
